@@ -1,10 +1,12 @@
 package com.sguessou.app.ws.mobileappws.io;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.io.Serializable;
 
+@Entity(name = "users")
 public class UserEntity implements Serializable {
 
     private static final long serialVersionUID = 8324862782352657147L;

@@ -1,14 +1,40 @@
 package com.sguessou.app.ws.mobileappws.service.impl;
 
+import com.sguessou.app.ws.mobileappws.UserRepository;
+import com.sguessou.app.ws.mobileappws.io.UserEntity;
 import com.sguessou.app.ws.mobileappws.service.UserService;
 import com.sguessou.app.ws.mobileappws.shared.dto.UserDto;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    private UserRepository userRepository;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Override
     public UserDto createUser(UserDto user) {
-        return null;
+
+        if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("Record already exists");
+
+        UserEntity userEntity = new UserEntity();
+        BeanUtils.copyProperties(user, userEntity);
+
+        userEntity.setEncryptedPassword("test");
+        userEntity.setUserId("testUserId");
+
+
+        UserEntity storedUserDetails = userRepository.save(userEntity);
+
+        UserDto returnValue = new UserDto();
+        BeanUtils.copyProperties(storedUserDetails, returnValue);
+
+        return returnValue;
     }
 }
