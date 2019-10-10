@@ -4,14 +4,11 @@ import com.sguessou.app.ws.mobileappws.exceptions.UserServiceException;
 import com.sguessou.app.ws.mobileappws.service.UserService;
 import com.sguessou.app.ws.mobileappws.shared.dto.UserDto;
 import com.sguessou.app.ws.mobileappws.ui.model.request.UserDetailsRequestModel;
-import com.sguessou.app.ws.mobileappws.ui.model.response.ErrorMessages;
-import com.sguessou.app.ws.mobileappws.ui.model.response.UserRest;
+import com.sguessou.app.ws.mobileappws.ui.model.response.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.*;
 
 @RestController
 @RequestMapping("users")
@@ -71,8 +68,17 @@ public class UserController {
         return returnValue;
     }
 
-    @DeleteMapping
-    public String deleteUser() {
-        return "delete user was called";
+    @DeleteMapping(path = "/{id}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
+    public OperationStatusModel deleteUser(@PathVariable String id) {
+
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.DELETE.name());
+
+        userService.deleteUser(id);
+
+        returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        return returnValue;
     }
 }

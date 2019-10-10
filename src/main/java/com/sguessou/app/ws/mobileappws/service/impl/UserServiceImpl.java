@@ -1,9 +1,8 @@
 package com.sguessou.app.ws.mobileappws.service.impl;
 
-import com.sguessou.app.ws.mobileappws.exceptions.ErrorMessage;
 import com.sguessou.app.ws.mobileappws.exceptions.UserServiceException;
-import com.sguessou.app.ws.mobileappws.io.repositories.UserRepository;
 import com.sguessou.app.ws.mobileappws.io.entity.UserEntity;
+import com.sguessou.app.ws.mobileappws.io.repositories.UserRepository;
 import com.sguessou.app.ws.mobileappws.service.UserService;
 import com.sguessou.app.ws.mobileappws.shared.Utils;
 import com.sguessou.app.ws.mobileappws.shared.dto.UserDto;
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
         UserDto returnValue = new UserDto();
         UserEntity userEntity = userRepository.findByUserId(userId);
 
-        if (userEntity == null) throw new UsernameNotFoundException(userId);
+        if (userEntity == null) throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
 
         BeanUtils.copyProperties(userEntity, returnValue);
         return returnValue;
@@ -100,5 +99,15 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(updatedUserDetails, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity == null) throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+
+        userRepository.delete(userEntity);
     }
 }
