@@ -1,6 +1,6 @@
-package com.sguessou.app.ws.mobileappws;
+package com.sguessou.app.ws.mobileappws.io.repositories;
 
-import com.sguessou.app.ws.mobileappws.io.UserEntity;
+import com.sguessou.app.ws.mobileappws.io.entity.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

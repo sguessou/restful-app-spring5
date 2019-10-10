@@ -1,4 +1,4 @@
-package com.sguessou.app.ws.mobileappws.io;
+package com.sguessou.app.ws.mobileappws.io.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
