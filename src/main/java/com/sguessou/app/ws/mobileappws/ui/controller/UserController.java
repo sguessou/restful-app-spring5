@@ -1,16 +1,20 @@
 package com.sguessou.app.ws.mobileappws.ui.controller;
 
 import com.sguessou.app.ws.mobileappws.exceptions.UserServiceException;
+import com.sguessou.app.ws.mobileappws.service.AddressService;
 import com.sguessou.app.ws.mobileappws.service.UserService;
+import com.sguessou.app.ws.mobileappws.shared.dto.AddressDto;
 import com.sguessou.app.ws.mobileappws.shared.dto.UserDto;
 import com.sguessou.app.ws.mobileappws.ui.model.request.UserDetailsRequestModel;
 import com.sguessou.app.ws.mobileappws.ui.model.response.*;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +24,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    AddressService addressService;
 
     @GetMapping(
             path = "/{id}",
@@ -100,4 +107,38 @@ public class UserController {
 
         return returnValue;
     }
+
+    @GetMapping(
+            path = "/{id}/addresses",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
+    public List<AddressesRest> getUserAddresses(@PathVariable String id) {
+
+        List<AddressesRest> returnValue = new ArrayList<>();
+
+        List<AddressDto> addressesDto = addressService.getAddresses(id);
+
+        if (addressesDto != null && !addressesDto.isEmpty()) {
+            Type listType = new TypeToken<List<AddressesRest>>() {}.getType();
+            returnValue = new ModelMapper().map(addressesDto, listType);
+        }
+
+
+        return returnValue;
+    }
+
+    @GetMapping(
+            path = "/{userId}/addresses/{addressId}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
+    public AddressesRest getUserAddress(@PathVariable String addressId) {
+
+        AddressDto addressesDto = addressService.getAddress(addressId);
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        return modelMapper.map(addressesDto, AddressesRest.class);
+    }
+
+
 }

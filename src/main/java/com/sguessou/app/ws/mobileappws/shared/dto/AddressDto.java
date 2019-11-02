@@ -1,6 +1,9 @@
 package com.sguessou.app.ws.mobileappws.shared.dto;
 
+import java.io.Serializable;
+
 public class AddressDto {
+
     private long id;
     private String addressId;
     private String city;
@@ -8,7 +11,15 @@ public class AddressDto {
     private String streetName;
     private String postalCode;
     private String type;
-    private UserDto UserDetails;
+    private UserDto userDetails;
+
+    public UserDto getUserDetails() {
+        return userDetails;
+    }
+
+    public void setUserDetails(UserDto userDetails) {
+        this.userDetails = userDetails;
+    }
 
     public long getId() {
         return id;
@@ -58,13 +69,6 @@ public class AddressDto {
         this.type = type;
     }
 
-    public UserDto getUserDetails() {
-        return UserDetails;
-    }
-
-    public void setUserDetails(UserDto userDetails) {
-        UserDetails = userDetails;
-    }
 
     public String getAddressId() {
         return addressId;
