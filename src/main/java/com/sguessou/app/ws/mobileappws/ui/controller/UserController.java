@@ -5,6 +5,7 @@ import com.sguessou.app.ws.mobileappws.service.UserService;
 import com.sguessou.app.ws.mobileappws.shared.dto.UserDto;
 import com.sguessou.app.ws.mobileappws.ui.model.request.UserDetailsRequestModel;
 import com.sguessou.app.ws.mobileappws.ui.model.response.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -42,13 +43,11 @@ public class UserController {
 
         if (userDetails.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
-        UserRest returnValue = new UserRest();
-        UserDto userDto = new UserDto();
-
-        BeanUtils.copyProperties(userDetails, userDto);
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
         UserDto createdUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createdUser, returnValue);
+        UserRest returnValue = modelMapper.map(createdUser, UserRest.class);
 
         return returnValue;
     }

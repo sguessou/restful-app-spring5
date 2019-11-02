@@ -5,8 +5,10 @@ import com.sguessou.app.ws.mobileappws.io.entity.UserEntity;
 import com.sguessou.app.ws.mobileappws.io.repositories.UserRepository;
 import com.sguessou.app.ws.mobileappws.service.UserService;
 import com.sguessou.app.ws.mobileappws.shared.Utils;
+import com.sguessou.app.ws.mobileappws.shared.dto.AddressDto;
 import com.sguessou.app.ws.mobileappws.shared.dto.UserDto;
 import com.sguessou.app.ws.mobileappws.ui.model.response.ErrorMessages;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
@@ -41,8 +43,17 @@ public class UserServiceImpl implements UserService {
 
         if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("Record already exists");
 
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(user, userEntity);
+
+        for(int i=0; i<user.getAddresses().size(); i++)
+        {
+            AddressDto address = user.getAddresses().get(i);
+            address.setUserDetails(user);
+            address.setAddressId(utils.generateAddressId(30));
+            user.getAddresses().set(i, address);
+        }
+
+        ModelMapper modelMapper = new ModelMapper();
+        UserEntity userEntity = modelMapper.map(user, UserEntity.class);
 
         String publicUserId = utils.generateUserId(30);
 
@@ -51,8 +62,8 @@ public class UserServiceImpl implements UserService {
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
 
-        UserDto returnValue = new UserDto();
-        BeanUtils.copyProperties(storedUserDetails, returnValue);
+        UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
+
 
         return returnValue;
     }
